@@ -24,7 +24,9 @@ from webapp import views
 
 
 urlpatterns = [
+    # admin routes:
     path('admin/', admin.site.urls),
-    path('', views.HomeView.as_view(), name="homepage"),
-    re_path(r'^portrait/', include('webapp.urls'))
+
+    # webapp routes:
+    re_path(r'^', include('webapp.urls', namespace='webapp'))
 ]

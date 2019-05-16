@@ -63,6 +63,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'webapp.context_processors.facebook_app_id',
             ],
         },
     },
@@ -125,3 +126,5 @@ STATICFILE_DIRS = (
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+FACEBOOK_APP_ID = '440979519801392'

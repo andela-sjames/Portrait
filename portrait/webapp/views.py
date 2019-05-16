@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 
 
 class HomeView(TemplateView):
@@ -9,3 +9,7 @@ class HomeView(TemplateView):
 
     def get(self, request):
         return render(request, self.template_name)
+
+
+class FacebookAuthView(View):
+    pass
