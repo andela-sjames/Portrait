@@ -28,5 +28,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # webapp routes:
-    re_path(r'^', include('webapp.urls', namespace='webapp'))
+    re_path(r'^', include('webapp.urls'))
 ]

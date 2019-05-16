@@ -17,7 +17,7 @@ class SocialProfile(models.Model):
     photo = models.TextField(blank=True)
     extra_data = models.TextField(blank=True)
 
-    user = models.OneToOneField(User, related_name='social_profile')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='social_profile')
 
     def __repr__(self):
         return f"{self.provider}:{self.social_id}"

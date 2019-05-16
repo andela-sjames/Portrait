@@ -1,7 +1,11 @@
+import json
+
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
-from utils.decorators import json_response
+from webapp.utils.decorators import json_response
 
 
 class LoginRequiredMixin(object):
@@ -43,4 +47,19 @@ class FacebookAuthView(JsonResponseMixin, View):
         """
         auth_form = FacebookAuthForm(request.POST)
         if auth_form.is_valid():
-            pass
+            # get or create the user:
+            user = auth_form.save()
+            if user:
+                profile = user.social_profile
+                profile.extra_data = json.dumps(request.POST)
+                profile.save()
+                # log the user in:
+                login(request, user)
+                # return success response:
+                return {
+                    'status': 'success',
+                    'status_code': 200,
+                    'loginRedirectURL': reverse('webapp:dashboard'),
+                }
+        # return error response
+        return {'status': 'error', 'status_code': 403, }
