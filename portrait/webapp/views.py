@@ -37,4 +37,10 @@ class FacebookAuthView(JsonResponseMixin, View):
     """
     Logs a user in with their facebook account.
     """
-    pass
+    def post(self, request, *args, **kwargs):
+        """
+        Logs a user out and redirects to the index view.
+        """
+        auth_form = FacebookAuthForm(request.POST)
+        if auth_form.is_valid():
+            pass
