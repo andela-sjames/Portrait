@@ -12,8 +12,9 @@ var facebook = {
   
     appConfig: {
       appId: $('meta[name="facebook_app_id"]').attr('content'),
-      version: 'v2.5',
-      cookie: true
+      version: 'v3.3',
+      cookie: true,
+      xfbml : true
     },
     
     // intializes facebook related features:
