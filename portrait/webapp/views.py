@@ -5,6 +5,7 @@ from django.views.generic import TemplateView, View
 from django.utils.decorators import method_decorator
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, logout
 
 from webapp.utils.decorators import json_response
 from webapp.forms import FacebookAuthForm
@@ -64,7 +65,7 @@ class FacebookAuthView(JsonResponseMixin, View):
                 return {
                     'status': 'success',
                     'status_code': 200,
-                    'loginRedirectURL': reverse('webapp:dashboard'),
+                    'loginRedirectURL': reverse('dashboard'),
                 }
         # return error response
         return {'status': 'error', 'status_code': 403, }
