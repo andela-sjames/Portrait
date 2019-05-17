@@ -1,0 +1,41 @@
+version: '3'
+
+volumes:
+  postgres_data: {}
+  postgres_backup: {}
+
+services:
+  database:
+    restart: always
+    image: postgres:10.4
+    container_name: portrait_database
+    environment:
+      - POSTGRES_DB=portrait_dev
+      - POSTGRESDB_PORT=5432
+      - POSTGRES_USER=portrait_dev
+      - POSTGRES_PASSWORD=portrait_dev
+      - POSTGRESDB_HOST=database
+    ports:
+      - "8092:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_backup:/backups
+  web:
+    restart: always
+    container_name: portrait_web
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    entrypoint:
+      - ./scripts/wait_for_db.sh
+    depends_on:
+      - database
+    environment:
+      - POSTGRES_DB=portrait_dev
+      - POSTGRESDB_PORT=5432
+      - POSTGRES_USER=portrait_dev
+      - POSTGRES_PASSWORD=portrait_dev
+      - POSTGRESDB_HOST=database
+      - MEMCACHE_HOST=memcached
