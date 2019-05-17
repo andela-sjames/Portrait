@@ -14,4 +14,8 @@ urlpatterns = [
     re_path(r'^dashboard/$',
         views.DashboardView.as_view(),
         name='dashboard'),
+
+    re_path(r'^logout/$',
+        views.LogOutView.as_view(),
+        name='logout'),
 ]

@@ -6,12 +6,11 @@ from django.utils.decorators import method_decorator
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
+from django.http import HttpResponseRedirect
 
 from webapp.utils.decorators import json_response
 from webapp.forms import FacebookAuthForm
-
 from webapp.models import SocialProfile
-
 
 
 class LoginRequiredMixin(object):
@@ -51,10 +50,10 @@ class FacebookAuthView(JsonResponseMixin, View):
         """
         Logs a user out and redirects to the index view.
         """
-        auth_form, token_expiry_time = FacebookAuthForm(request.POST)
+        auth_form = FacebookAuthForm(request.POST)
         if auth_form.is_valid():
             # get or create the user:
-            user = auth_form.save()
+            user, token_expiry_time = auth_form.save()
             if user:
                 profile = user.social_profile
                 profile.extra_data = json.dumps(request.POST)
@@ -85,3 +84,13 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             user=request.user)
 
         return self.render_to_response(context)
+
+
+class LogOutView(View, LoginRequiredMixin):
+    
+    '''Logout User from session.'''
+
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return HttpResponseRedirect(
+            reverse('homepage'))

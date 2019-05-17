@@ -11,7 +11,7 @@ def get_credentials(access_token):
     app_id = os.getenv("FACEBOOK_APP_ID"),
     app_secret = os.getenv("FACEBOOK_APP_SECRET"),
     user_short_token = access_token
-    access_token_url = f"https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id={app_id}&client_secret={app_secret}&fb_exchange_token={user_short_token}"
+    access_token_url = f"https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id={app_id[0]}&client_secret={app_secret[0]}&fb_exchange_token={user_short_token}"
 
     facebook_request = requests.get(access_token_url)
     access_token_info = facebook_request.json()
@@ -19,7 +19,7 @@ def get_credentials(access_token):
     user_long_token = access_token_info['access_token']
     token_expiry_time = access_token_info['expires_in']
 
-    return user_long_token, token_expiry_time
+    return (user_long_token, token_expiry_time)
 
 
 class FacebookAuthForm(forms.Form):
@@ -34,7 +34,7 @@ class FacebookAuthForm(forms.Form):
     first_name = forms.CharField()
     last_name = forms.CharField()
     photo = forms.CharField(required=False)
-    access_token = forms.CharField(required=False)
+    accessToken = forms.CharField(required=False)
 
     def save(self):
         """
@@ -43,6 +43,10 @@ class FacebookAuthForm(forms.Form):
         """
         data = self.cleaned_data
         user = None
+
+        # make call to graphAPI to get long-lived access token
+        user_access_token, token_expiry_time = get_credentials(data['accessToken'])
+
         try:
             # get associated user if it exists:
             social_id = data['id']
@@ -61,20 +65,15 @@ class FacebookAuthForm(forms.Form):
             )
             user.save()
 
-            # get user_short_token
-
-            # make call to graphAPI to get long-lived access token
-            user_access_token, token_expiry_time = get_credentials(access_token)
-
             # Create the user's social_profile:
             social_profile = SocialProfile(
                 provider=SocialProfile.FACEBOOK,
                 social_id=data['id'],
                 photo=data['photo'],
-                user_access_token = user_access_token
-                user=user,
+                user_access_token = user_access_token,
+                user = user,
             )
             social_profile.save()
 
         user.backend = 'django.contrib.auth.backends.ModelBackend'
-        return user, token_expiry_time
+        return (user, token_expiry_time)
