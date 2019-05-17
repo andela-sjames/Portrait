@@ -4,6 +4,7 @@ Django==2.2.1
 get==2019.4.13
 idna==2.8
 post==2019.4.13
+psycopg2-binary==2.7.7
 public==2019.4.13
 pytz==2019.1
 query-string==2019.4.13

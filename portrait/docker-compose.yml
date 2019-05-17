@@ -38,4 +38,5 @@ services:
       - POSTGRES_USER=portrait_dev
       - POSTGRES_PASSWORD=portrait_dev
       - POSTGRESDB_HOST=database
-      - MEMCACHE_HOST=memcached
+      - FACEBOOK_APP_ID=440979519801392
+      - FACEBOOK_APP_SECRET=28820c2e1398f8aa3656e3ad0417d535
