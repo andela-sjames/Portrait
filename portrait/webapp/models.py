@@ -16,6 +16,7 @@ class SocialProfile(models.Model):
     social_id = models.CharField(max_length=255, unique=True)
     photo = models.TextField(blank=True)
     extra_data = models.TextField(blank=True)
+    user_access_token = models.TextField(blank=True)
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='social_profile')
 
