@@ -61,7 +61,8 @@ var facebook = {
     onFBLoginResponse: function(response){
       if (response.status === 'connected') {
         // log the user in on our server:
-        facebook.getUser(facebook.authLogin);
+        var accessToken = response.authResponse.accessToken;
+        facebook.getUser(accessToken, facebook.authLogin);
       } else {
         // show error status:
         facebook.LoginStatusLabel.html(facebook.messages.FBLogInFailed);
@@ -70,12 +71,12 @@ var facebook = {
   
     // gets the facebook user's profile and
     // executes the callback with the response.
-    getUser: function(callback){
+    getUser: function(accessToken, callback){
       FB.api(
         '/me', 
         {fields: facebook.userFields}, 
         function(response) {    
-          callback(response);
+          callback(accessToken, response);
         }
       );
     },
@@ -89,13 +90,14 @@ var facebook = {
   
     // function that logs the user in on the server
     // using their facebook details.
-    authLogin: function(response) {
+    authLogin: function(accessToken, response) {
       // set the preloader message:
       facebook.LoginStatusLabel.html(
           'Hi ' + response.last_name + ", logging you in..."
       );
-      // set the photoURL:
+      // set the photoURL and access token:
       response.photo = response.picture.data.url;
+      response.accessToken = accessToken
       // send ajax login request:
       $.ajax({
         url: facebook.socialLoginRoute,

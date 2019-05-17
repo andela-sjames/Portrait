@@ -51,7 +51,7 @@ class FacebookAuthView(JsonResponseMixin, View):
         """
         Logs a user out and redirects to the index view.
         """
-        auth_form = FacebookAuthForm(request.POST)
+        auth_form, token_expiry_time = FacebookAuthForm(request.POST)
         if auth_form.is_valid():
             # get or create the user:
             user = auth_form.save()
@@ -61,6 +61,7 @@ class FacebookAuthView(JsonResponseMixin, View):
                 profile.save()
                 # log the user in:
                 login(request, user)
+                self.request.session.set_expiry(token_expiry_time)
                 # return success response:
                 return {
                     'status': 'success',
