@@ -1,4 +1,5 @@
 import json
+import os
 
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
@@ -9,8 +10,10 @@ from django.contrib.auth import login, logout
 from django.http import HttpResponseRedirect
 
 from webapp.utils.decorators import json_response
+from webapp.utils.parse_signed_request import parse_signed_request
 from webapp.forms import FacebookAuthForm
 from webapp.models import SocialProfile
+
 
 
 class LoginRequiredMixin(object):
@@ -91,6 +94,33 @@ class LogOutView(View, LoginRequiredMixin):
     '''Logout User from session.'''
 
     def get(self, request, *args, **kwargs):
+
+        # remove access token from database on logout
+        if request.user.is_authenticated:
+            profile = SocialProfile.objects.get(user=request.user)
+            profile.user_access_token = ''
+            profile.save()
+
         logout(request)
         return HttpResponseRedirect(
             reverse('homepage'))
+
+
+class RevokeFacebookView(View):
+
+    """Revoke user from application"""
+
+    def post(self, request, *args, **kwargs):
+        secret = os.getenv("FACEBOOK_APP_SECRET")
+        signed_request = self.request.POST['signed_request']
+
+        data = parse_signed_request(secret[0], signed_request)
+        if data:
+            user_id = data['user_id']
+            social_profile = SocialProfile.objects.get(
+                provider=SocialProfile.FACEBOOK,
+                social_id=user_id,
+            )
+            user = social_profile.user
+            user.is_active = False
+            user.save()

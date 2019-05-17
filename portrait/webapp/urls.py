@@ -18,4 +18,8 @@ urlpatterns = [
     re_path(r'^logout/$',
         views.LogOutView.as_view(),
         name='logout'),
+
+    re_path(r'^auth/revoke/$',
+        views.RevokeFacebookView.as_view(),
+        name='revoke_auth'),
 ]
