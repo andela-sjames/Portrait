@@ -6,3 +6,20 @@ body {
     smoothing: antialiased;
     text-rendering: optimizeLegibility;
 }
+
+.container-card  {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+  }
+  
+.text-center {
+    text-align: center;
+}
+/* 
+.fixed-action-btn{
+    
+} */

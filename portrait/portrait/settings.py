@@ -126,5 +126,3 @@ STATICFILE_DIRS = (
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-FACEBOOK_APP_ID = '440979519801392'

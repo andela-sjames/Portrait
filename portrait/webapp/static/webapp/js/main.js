@@ -16,7 +16,7 @@ var facebook = {
       cookie: true,
       xfbml : true
     },
-    
+
     // intializes facebook related features:
     init: function(){
       facebook.initSDK();
@@ -48,7 +48,8 @@ var facebook = {
     },
   
     // event handler for log
-    onLoginClicked: function(){
+    onLoginClicked: function(e){
+      e.preventDefault();
       facebook.LoginStatusLabel.html(facebook.messages.FBLoggingIn);
       FB.login(
         facebook.onFBLoginResponse,
