@@ -1,7 +1,26 @@
+import os
+import requests
+
 from django import forms
 from django.contrib.auth.models import User
 
 from webapp.models import SocialProfile
+
+
+def get_credentials(user_short_token):
+    app_id = os.getenv("FACEBOOK_APP_ID"),
+    app_secret = os.getenv("FACEBOOK_APP_SECRET"),
+    user_short_token = user_short_token
+    access_token_url = f"https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id={app_id}&client_secret={app_secret}&fb_exchange_token={user_short_token}"
+
+    facebook_request = requests.get(access_token_url)
+    access_token_info = facebook_request.json()
+
+    user_long_token = access_token_info['access_token']
+    token_expiry_time = access_token_info['expires_in']
+
+    return user_long_token, token_expiry_time
+
 
 class FacebookAuthForm(forms.Form):
     """
@@ -41,14 +60,18 @@ class FacebookAuthForm(forms.Form):
             )
             user.save()
 
+            # get user_short_token
+
             # make call to graphAPI to get long-lived access token
+            user_access_token, token_expiry_time = get_credentials(user_short_token)
 
             # Create the user's social_profile:
             social_profile = SocialProfile(
                 provider=SocialProfile.FACEBOOK,
                 social_id=data['id'],
                 photo=data['photo'],
-                user=user
+                user_access_token = user_access_token
+                user=user,
             )
             social_profile.save()
 
