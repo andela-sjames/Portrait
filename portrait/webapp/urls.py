@@ -10,4 +10,8 @@ urlpatterns = [
     re_path(r'^auth/facebook/$',
         views.FacebookAuthView.as_view(),
         name='facebook_auth'),
+
+    re_path(r'^dashboard/$',
+        views.DashboardView.as_view(),
+        name='dashboard'),
 ]

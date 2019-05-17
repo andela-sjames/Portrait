@@ -10,8 +10,13 @@
                 <span><h4 class="text-center"> Let's get started! </h4></span>
             </div>
 
-            <div class="center-align ">
+            <div class="center-align">
                 <button class="waves-effect waves-light btn-small blue lighten-1" id="facebook-login-action"><i class="fa fa-facebook-official fa-fw"></i> Log in with Facebook</button>
+            </div>
+
+            <div class="center-align ">
+                <p id="facebook-login-status"></p>
+                <form id="login-csrf">{% csrf_token %}</form>
             </div>
         </div>
     </div>

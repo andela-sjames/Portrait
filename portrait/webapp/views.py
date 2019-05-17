@@ -3,9 +3,14 @@ import json
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
 from django.utils.decorators import method_decorator
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from webapp.utils.decorators import json_response
+from webapp.forms import FacebookAuthForm
+
+from webapp.models import SocialProfile
+
 
 
 class LoginRequiredMixin(object):
@@ -63,3 +68,18 @@ class FacebookAuthView(JsonResponseMixin, View):
                 }
         # return error response
         return {'status': 'error', 'status_code': 403, }
+
+
+class DashboardView(LoginRequiredMixin, TemplateView):
+    """
+    Represents the signed in users' dashboard/workspace view.
+    """
+    template_name = 'dashboard.html'
+
+    def get(self, request, *args, **kwargs):
+
+        context = self.get_context_data(**kwargs)
+        context['profile'] = SocialProfile.objects.get(
+            user=request.user)
+
+        return self.render_to_response(context)
